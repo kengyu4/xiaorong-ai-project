@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.git/
+.vscode/
+vite-dev.log
+vite-dev.err.log

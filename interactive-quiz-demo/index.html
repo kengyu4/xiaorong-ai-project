@@ -1,0 +1,1922 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>小绒老师助教 Demo</title>
+  <style>
+    :root {
+      --primary: #486174;
+      --primary-strong: #243e50;
+      --primary-soft: #cbe6fc;
+      --primary-wash: #eef6fb;
+      --mint: #396660;
+      --mint-soft: #dff6f2;
+      --sand: #aca4a0;
+      --sand-soft: #f2e9e4;
+      --amber: #d97706;
+      --amber-soft: #fff7ed;
+      --green: #16a34a;
+      --green-soft: #ecfdf3;
+      --red: #dc2626;
+      --red-soft: #fef2f2;
+      --ink: #191c1d;
+      --muted: #667085;
+      --line: #dfe4e8;
+      --surface: #ffffff;
+      --surface-soft: #f3f6f8;
+      --bg: #f6f8fb;
+      --shadow: 0 18px 46px rgba(72, 97, 116, 0.11);
+      --shadow-soft: 0 10px 26px rgba(72, 97, 116, 0.08);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-width: 320px;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: "Be Vietnam Pro", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    button,
+    textarea,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+      padding: 22px;
+      background:
+        linear-gradient(180deg, rgba(203, 230, 252, 0.36), rgba(246, 248, 251, 0) 360px),
+        var(--bg);
+    }
+
+    .shell {
+      width: min(1200px, 100%);
+      margin: 0 auto;
+    }
+
+    .home-header,
+    .study-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #ffffff, #dcecf6);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), var(--shadow-soft);
+      display: grid;
+      place-items: center;
+      color: var(--primary-strong);
+      font-weight: 900;
+    }
+
+    .brand-text {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .brand-text strong {
+      font-size: 18px;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .brand-text span {
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .chip,
+    .tag,
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-radius: 999px;
+      color: var(--primary-strong);
+      background: var(--primary-wash);
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .chip.mint,
+    .tag.mint {
+      color: var(--mint);
+      background: var(--mint-soft);
+    }
+
+    .chip.sand,
+    .tag.sand {
+      color: #6f5f59;
+      background: var(--sand-soft);
+    }
+
+    .btn {
+      min-height: 42px;
+      border-radius: 999px;
+      padding: 10px 16px;
+      color: #fff;
+      background: var(--primary);
+      box-shadow: 0 10px 18px rgba(72, 97, 116, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(2px);
+      box-shadow: 0 5px 12px rgba(72, 97, 116, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    .btn.secondary {
+      background: #eef2f5;
+      color: var(--primary-strong);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 16px rgba(72, 97, 116, 0.08);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      color: var(--primary);
+      box-shadow: none;
+      border: 1px solid #c9d8e3;
+    }
+
+    .btn.warn {
+      background: var(--amber);
+    }
+
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.52;
+      transform: none;
+    }
+
+    .home-hero {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: 22px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .hero-copy,
+    .hero-visual,
+    .panel,
+    .course-card,
+    .mode-card,
+    .stat-card,
+    .persona-hint,
+    .study-card {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(195, 199, 204, 0.72);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .hero-copy {
+      padding: 34px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 26px;
+      min-height: 360px;
+    }
+
+    .eyebrow {
+      width: fit-content;
+      color: var(--mint);
+      background: var(--mint-soft);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+
+    .hero-title {
+      margin: 0;
+      max-width: 680px;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1.06;
+      letter-spacing: 0;
+      color: #162839;
+    }
+
+    .hero-desc {
+      margin: 16px 0 0;
+      max-width: 660px;
+      color: #475569;
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-visual {
+      position: relative;
+      overflow: hidden;
+      min-height: 360px;
+      padding: 24px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 16px;
+      background:
+        linear-gradient(150deg, rgba(255, 255, 255, 0.96), rgba(238, 246, 251, 0.92)),
+        #fff;
+    }
+
+    .visual-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .role-stage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: end;
+    }
+
+    .role-card {
+      position: relative;
+      min-height: 216px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(203, 214, 222, 0.8);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 16px 26px rgba(72, 97, 116, 0.09);
+      padding: 16px;
+      display: grid;
+      align-content: end;
+      overflow: hidden;
+    }
+
+    .role-card.teacher {
+      background: linear-gradient(180deg, #ffffff, #edf7fb);
+    }
+
+    .role-card.baizi {
+      background: linear-gradient(180deg, #ffffff, #f7f1ee);
+    }
+
+    .role-label {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      gap: 3px;
+      color: var(--primary-strong);
+    }
+
+    .role-label strong {
+      font-size: 16px;
+    }
+
+    .role-label span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .mascot {
+      position: absolute;
+      left: 50%;
+      top: 22px;
+      transform: translateX(-50%);
+      width: 128px;
+      height: 128px;
+      border-radius: 44% 44% 48% 48%;
+      background: #f4f7f9;
+      border: 1px solid rgba(115, 120, 124, 0.26);
+      box-shadow: inset 0 8px 16px rgba(255, 255, 255, 0.95), 0 18px 30px rgba(72, 97, 116, 0.15);
+    }
+
+    .mascot::before,
+    .mascot::after {
+      content: "";
+      position: absolute;
+    }
+
+    .mascot.teacher::before {
+      left: 28px;
+      top: 34px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #506273;
+      box-shadow: 56px 0 0 #506273;
+    }
+
+    .mascot.teacher::after {
+      left: 38px;
+      top: 74px;
+      width: 52px;
+      height: 22px;
+      border-radius: 0 0 999px 999px;
+      border-bottom: 5px solid #71879a;
+    }
+
+    .mascot.baizi {
+      width: 142px;
+      height: 132px;
+      background: #f3f0ec;
+    }
+
+    .ear {
+      position: absolute;
+      top: -24px;
+      width: 42px;
+      height: 54px;
+      background: #f1eee9;
+      border: 1px solid rgba(115, 120, 124, 0.24);
+      border-radius: 12px 34px 12px 34px;
+      transform: rotate(-28deg);
+      box-shadow: inset 0 8px 14px rgba(255, 255, 255, 0.78);
+    }
+
+    .ear.right {
+      right: 8px;
+      transform: rotate(28deg) scaleX(-1);
+    }
+
+    .ear.left {
+      left: 8px;
+    }
+
+    .eye {
+      position: absolute;
+      top: 52px;
+      width: 24px;
+      height: 30px;
+      border-radius: 50%;
+      background: #536170;
+      box-shadow: inset 0 5px 0 rgba(255, 255, 255, 0.42);
+    }
+
+    .eye.left {
+      left: 34px;
+    }
+
+    .eye.right {
+      right: 34px;
+    }
+
+    .mouth {
+      position: absolute;
+      left: 57px;
+      top: 88px;
+      width: 28px;
+      height: 14px;
+      border-radius: 0 0 999px 999px;
+      border-bottom: 4px solid #6a6870;
+    }
+
+    .scarf {
+      position: absolute;
+      left: 22px;
+      bottom: 6px;
+      width: 98px;
+      height: 26px;
+      border-radius: 999px;
+      background: #c9cbd0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+    }
+
+    .dialog-mini {
+      display: grid;
+      gap: 8px;
+    }
+
+    .dialog-mini p {
+      margin: 0;
+      color: #42515c;
+      line-height: 1.7;
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(203, 214, 222, 0.78);
+      border-radius: 18px 18px 18px 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .stat-card {
+      padding: 16px;
+      display: grid;
+      gap: 6px;
+      min-height: 96px;
+    }
+
+    .stat-card span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat-card strong {
+      font-size: 25px;
+      color: var(--primary-strong);
+    }
+
+    .home-section {
+      margin-top: 20px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.3;
+      letter-spacing: 0;
+      color: #162839;
+    }
+
+    .section-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .mode-card {
+      padding: 18px;
+      text-align: left;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: center;
+      color: var(--ink);
+      transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+    }
+
+    .mode-card.active {
+      border-color: #9ecfd1;
+      background: linear-gradient(145deg, #ffffff, #edf9f6);
+      box-shadow: var(--shadow);
+    }
+
+    .mode-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 17px;
+      display: grid;
+      place-items: center;
+      color: var(--primary-strong);
+      background: var(--primary-wash);
+      font-weight: 900;
+    }
+
+    .mode-card.active .mode-icon {
+      background: var(--mint-soft);
+      color: var(--mint);
+    }
+
+    .mode-copy {
+      display: grid;
+      gap: 4px;
+    }
+
+    .mode-copy strong {
+      font-size: 17px;
+    }
+
+    .mode-copy span {
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 13px;
+    }
+
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .course-card {
+      min-height: 298px;
+      padding: 18px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+      overflow: hidden;
+    }
+
+    .course-cover {
+      min-height: 96px;
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(203, 230, 252, 0.65), rgba(223, 246, 242, 0.74)),
+        #edf3f7;
+      border: 1px solid rgba(195, 199, 204, 0.7);
+      padding: 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .cover-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 8px 18px rgba(72, 97, 116, 0.09);
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+      font-weight: 900;
+      font-size: 18px;
+    }
+
+    .course-card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      line-height: 1.4;
+      letter-spacing: 0;
+      color: #172033;
+    }
+
+    .course-card p {
+      margin: 0;
+      color: #52606b;
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .course-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .persona-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .persona-hint {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .mini-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      color: var(--primary-strong);
+      background: var(--primary-wash);
+      font-weight: 900;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.84);
+    }
+
+    .mini-avatar.baizi {
+      background: var(--sand-soft);
+      color: #635d5a;
+    }
+
+    .persona-hint strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--primary-strong);
+    }
+
+    .persona-hint p {
+      margin: 0;
+      color: #536170;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .study-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel,
+    .study-card {
+      padding: 22px;
+    }
+
+    .study-card {
+      display: grid;
+      gap: 14px;
+    }
+
+    .study-title {
+      margin: 0;
+      color: #162839;
+      font-size: 28px;
+      line-height: 1.32;
+      letter-spacing: 0;
+    }
+
+    .study-desc {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .lesson-stage {
+      display: grid;
+      gap: 18px;
+    }
+
+    .lesson-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+
+    .progress-chip {
+      color: var(--mint);
+      background: var(--mint-soft);
+    }
+
+    .dialogue-wrap {
+      display: grid;
+      grid-template-columns: 170px minmax(0, 1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .speaker-card {
+      position: relative;
+      min-height: 260px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, #fff, #eef6fb);
+      border: 1px solid rgba(195, 199, 204, 0.7);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      padding: 16px;
+      display: grid;
+      align-content: end;
+    }
+
+    .speaker-card .mascot {
+      top: 28px;
+      transform: translateX(-50%) scale(0.92);
+    }
+
+    .speaker-name {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      gap: 4px;
+    }
+
+    .speaker-name strong {
+      color: var(--primary-strong);
+    }
+
+    .speaker-name span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .dialogue-box {
+      min-height: 260px;
+      border-radius: 28px 28px 28px 12px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(158, 207, 209, 0.62);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+    }
+
+    .speaker-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--primary-strong);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .speaker-line span:last-child {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .dialogue-text {
+      color: #25323b;
+      font-size: 19px;
+      line-height: 1.9;
+      white-space: pre-line;
+    }
+
+    .dialogue-tip {
+      color: #536170;
+      font-size: 13px;
+      line-height: 1.6;
+      border-top: 1px dashed #ccd6dd;
+      padding-top: 12px;
+    }
+
+    .actions,
+    .homework-actions,
+    .question-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .hand-panel {
+      display: none;
+      border: 1px solid #fed7aa;
+      background: #fffaf3;
+      border-radius: 22px;
+      padding: 16px;
+      gap: 12px;
+    }
+
+    .hand-panel.visible {
+      display: grid;
+    }
+
+    .quick-questions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .quick-questions button {
+      color: #9a3412;
+      background: #fff;
+      border: 1px solid #fed7aa;
+      border-radius: 999px;
+      padding: 8px 11px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .ask-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      min-width: 0;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid #ccd6dd;
+      border-radius: 18px;
+      outline: none;
+      padding: 12px 14px;
+      line-height: 1.7;
+    }
+
+    textarea {
+      min-height: 190px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #9ecfd1;
+      box-shadow: 0 0 0 4px rgba(158, 207, 209, 0.22);
+    }
+
+    .side-panel {
+      display: grid;
+      gap: 14px;
+    }
+
+    .side-panel h2 {
+      margin: 0 0 12px;
+      color: var(--primary-strong);
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .knowledge-list,
+    .teacher-log,
+    .review-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .knowledge-item,
+    .log-item,
+    .review-item {
+      border-radius: 16px;
+      background: #f8fafb;
+      border: 1px solid rgba(223, 228, 232, 0.9);
+      padding: 12px;
+      color: #536170;
+      line-height: 1.55;
+      font-size: 13px;
+    }
+
+    .knowledge-item.active {
+      background: var(--primary-wash);
+      border-color: #cbe6fc;
+    }
+
+    .knowledge-item strong,
+    .log-item strong,
+    .review-item strong {
+      color: var(--primary-strong);
+    }
+
+    .review-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .question-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .question-title {
+      margin: 0 0 12px;
+      color: #162839;
+      font-size: 27px;
+      line-height: 1.36;
+      letter-spacing: 0;
+    }
+
+    .question-body {
+      color: #465762;
+      line-height: 1.75;
+      margin-bottom: 16px;
+    }
+
+    .coach-line {
+      color: #42515c;
+      line-height: 1.65;
+      background: var(--primary-wash);
+      border: 1px dashed #b5c8df;
+      border-radius: 18px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+
+    .result {
+      display: none;
+      margin-top: 18px;
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+
+    .result.visible {
+      display: block;
+    }
+
+    .score-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .score {
+      color: var(--primary);
+      font-size: 36px;
+      font-weight: 900;
+    }
+
+    .keyword-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .keyword {
+      color: var(--red);
+      background: var(--red-soft);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .keyword.hit {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .analysis {
+      color: #42515c;
+      background: #f8fafb;
+      border-radius: 18px;
+      padding: 14px;
+      line-height: 1.75;
+      white-space: pre-line;
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    @media (max-width: 980px) {
+      .home-hero,
+      .study-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid,
+      .course-grid,
+      .review-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero-copy,
+      .hero-visual {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        padding: 14px;
+      }
+
+      .home-header,
+      .study-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .hero-copy {
+        padding: 22px;
+      }
+
+      .hero-title {
+        font-size: 34px;
+      }
+
+      .role-stage,
+      .stats-grid,
+      .mode-grid,
+      .course-grid,
+      .persona-row,
+      .review-grid,
+      .dialogue-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .dialogue-text {
+        font-size: 17px;
+      }
+
+      .ask-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app"></div>
+
+  <script>
+    const courses = [
+      {
+        id: "vue-reactivity",
+        title: "Vue3 响应式入门",
+        subtitle: "适合先补基础，再做前端面试题",
+        teacher: "小绒老师",
+        goal: "能说清 ref、reactive、computed、watch 的使用边界。",
+        tags: ["Vue3", "响应式", "前端"],
+        difficulty: "入门",
+        lesson: [
+          {
+            title: "先建立地图",
+            point: "Vue3 的响应式不是背 API，而是理解数据变化后视图为什么会更新。",
+            text: "我们今天先学 Vue3 响应式。\n你可以把它想成三层：数据容器、依赖收集、触发更新。面试题通常考的是你能不能说清每一层的边界。"
+          },
+          {
+            title: "ref 的角色",
+            point: "ref 更像一个带 .value 的盒子，适合基本类型和整体替换。",
+            text: "第一块是 ref。\n如果你要让 number、string、boolean 这种基本类型响应式，ref 是更自然的选择。script 里读写要用 .value，模板里会自动解包。"
+          },
+          {
+            title: "reactive 的角色",
+            point: "reactive 基于 Proxy 包装对象，适合对象、数组和成组状态。",
+            text: "第二块是 reactive。\n它适合对象和数组，因为 Proxy 可以拦截对象属性的读取和修改。不过你直接解构 reactive 对象，响应式链路容易断。"
+          },
+          {
+            title: "准备作业",
+            point: "作业会要求你用自己的话解释差异，AI 会按关键词和结构即时讲评。",
+            text: "好了，知识点讲完。\n接下来我会布置 2 道题。你先自己答，提交一题，我就讲一题；我会指出命中的点、遗漏的点，以及面试里更好的表达方式。"
+          }
+        ],
+        questions: [
+          {
+            title: "Vue3 中 ref 和 reactive 的核心区别是什么？",
+            body: "请从使用场景、访问方式、响应式边界三个角度回答。",
+            tags: ["Vue3", "响应式"],
+            difficulty: "基础",
+            coach: "先写一句结论，再分别说明 ref、reactive、解构丢响应式。",
+            keywords: ["基本类型", "对象", ".value", "Proxy", "解构", "toRefs"],
+            answer: "ref 常用于基本类型或需要整体替换的值，script 中通过 .value 访问，模板中会自动解包；reactive 常用于对象或数组，基于 Proxy 代理。reactive 解构会丢失响应式，通常配合 toRefs 保留。",
+            aiExplain: "这题面试官要听三件事：ref 是容器，适合基本类型和整体替换；reactive 是对象代理，适合结构化状态；reactive 解构后容易丢响应式，所以要说到 toRefs。"
+          },
+          {
+            title: "computed 和 watch 应该分别用在什么场景？",
+            body: "请说明二者的触发方式、返回值特点和常见使用场景。",
+            tags: ["Vue3", "派生状态"],
+            difficulty: "基础",
+            coach: "把 computed 说成派生值，把 watch 说成副作用监听，会更清楚。",
+            keywords: ["派生", "缓存", "副作用", "异步", "监听", "返回值"],
+            answer: "computed 适合从已有响应式数据派生新值，具备缓存；watch 适合监听数据变化后执行副作用，比如请求接口、写缓存、异步处理。",
+            aiExplain: "判断口诀是：要一个值，用 computed；要做一件事，用 watch。computed 强调派生和缓存，watch 强调监听变化后触发副作用。"
+          }
+        ]
+      },
+      {
+        id: "ai-quiz-product",
+        title: "AI 刷题产品设计",
+        subtitle: "适合优化现有 AI 刷题页的产品闭环",
+        teacher: "小绒老师",
+        goal: "能把刷题页从答案展示改造成 AI 教学闭环。",
+        tags: ["产品设计", "AI 刷题", "闭环"],
+        difficulty: "进阶",
+        lesson: [
+          {
+            title: "先确定 AI 角色",
+            point: "AI 不应该只在最后批改，它应该从学习目标开始接管节奏。",
+            text: "我们先把 AI 的角色换一下。\n普通刷题页是题目机器；更好的 AI 刷题页应该像老师，从选择学习方向开始，就帮用户定路线。"
+          },
+          {
+            title: "先讲再练",
+            point: "如果用户缺少背景知识，直接做题只会变成猜题。",
+            text: "第二步是先讲再练。\nAI 根据题库标签抽出知识点，用短句、例子、追问来讲课。讲完再布置作业，用户就知道自己在练什么。"
+          },
+          {
+            title: "允许举手",
+            point: "课堂中断不是失败，而是个性化教学的入口。",
+            text: "第三步是举手提问。\n用户听不懂时，可以随时提问。AI 需要用当前知识点、当前题库和用户问题来补讲。"
+          },
+          {
+            title: "逐题讲评",
+            point: "提交一题讲一题，比一次性给总分更像老师。",
+            text: "第四步是逐题讲评。\n每提交一题，AI 立刻指出命中点、缺失点、标准表达和下一步建议。"
+          }
+        ],
+        questions: [
+          {
+            title: "如何设计一个更好的刷题反馈闭环？",
+            body: "假设用户做面试题，请说明提交前、提交后、复盘阶段分别应该有什么交互。",
+            tags: ["产品设计", "刷题"],
+            difficulty: "中等",
+            coach: "按提交前、提交后、复盘三个阶段答，不要只说给答案。",
+            keywords: ["先作答", "提示", "评分", "关键词", "错题", "复盘", "推荐"],
+            answer: "提交前应让用户先作答，并提供分层提示；提交后按关键词、结构完整度和边界点给评分，指出缺失项并开放解析；复盘阶段记录错题、收藏、薄弱标签和掌握度，再用于后续推荐。",
+            aiExplain: "这题的核心是闭环。提交前解决参与感，提交后解决即时反馈，复盘解决长期留存和推荐。只说 AI 给答案是不够的。"
+          },
+          {
+            title: "AI 从一开始介入刷题流程，应该有哪些关键步骤？",
+            body: "请把流程拆成选方向、讲课、提问、作业、讲评五个环节说明。",
+            tags: ["AI 教学", "流程"],
+            difficulty: "中等",
+            coach: "强调 AI 老师的节奏控制，而不是只强调聊天能力。",
+            keywords: ["选方向", "知识点", "讲课", "举手", "作业", "逐题讲评", "学习数据"],
+            answer: "AI 应先让用户选择学习方向，再根据题库标签组织知识点并进行对话式讲课；课堂中允许用户举手提问；讲完后布置题库作业；用户每提交一题，AI 立即逐题讲评；最后沉淀学习数据用于复习和推荐。",
+            aiExplain: "这题要突出 AI 的老师身份：定目标、讲知识、回答疑问、布置练习、逐题反馈、沉淀数据。"
+          }
+        ]
+      },
+      {
+        id: "learning-interaction",
+        title: "高效学习交互",
+        subtitle: "适合理解为什么要先作答、再看解析",
+        teacher: "小绒老师",
+        goal: "能用学习心理解释主动回忆、即时反馈和间隔复习。",
+        tags: ["学习体验", "交互", "复盘"],
+        difficulty: "进阶",
+        lesson: [
+          {
+            title: "看懂不等于会",
+            point: "直接看答案会制造掌握错觉。",
+            text: "先记住一句话：看懂答案，不等于面试时说得出来。\n刷题产品最容易犯的错，就是把答案提前摊开，让用户误以为自己学会了。"
+          },
+          {
+            title: "主动回忆",
+            point: "先让用户尝试输出，知识缺口才会暴露。",
+            text: "真正有效的是主动回忆。\n先遮住答案，让用户用自己的话说出来。说不出来的地方，就是下一步最值得讲的地方。"
+          },
+          {
+            title: "即时反馈",
+            point: "反馈要指出缺失点，而不是只告诉对错。",
+            text: "只告诉对错不够。\n好的反馈要告诉用户：你命中了哪些关键词，漏了哪些关键边界，下一次应该怎么组织表达。"
+          },
+          {
+            title: "课后复盘",
+            point: "复盘要转化成下一次推荐，而不是只保留一个分数。",
+            text: "最后，学习记录要能变成下一次推荐。\n错题、低分关键词、收藏题、答题耗时，都可以帮助 AI 判断下一节课该讲什么。"
+          }
+        ],
+        questions: [
+          {
+            title: "为什么直接显示答案会降低刷题效率？",
+            body: "请结合学习心理和产品交互说明原因，并给出替代方案。",
+            tags: ["学习体验", "交互"],
+            difficulty: "中等",
+            coach: "重点不是答案本身，而是用户有没有发生主动回忆。",
+            keywords: ["主动回忆", "即时反馈", "认知负荷", "错觉", "延迟答案", "自评"],
+            answer: "直接显示答案容易造成看懂了的错觉，用户缺少主动回忆和即时校验。替代方案是先让用户作答或自评，再按关键词反馈，最后开放解析并生成复盘任务。",
+            aiExplain: "产品上延迟答案，是为了逼出主动回忆；AI 反馈，是为了把模糊的不会变成明确的缺失点。"
+          },
+          {
+            title: "分层提示为什么比直接给解析更适合刷题？",
+            body: "请说明分层提示对思考、挫败感和学习数据的影响。",
+            tags: ["提示设计", "学习闭环"],
+            difficulty: "中等",
+            coach: "可以按提示层级、用户状态、数据沉淀三个角度回答。",
+            keywords: ["分层", "思考", "挫败感", "解析", "掌握度", "薄弱点"],
+            answer: "分层提示能保留用户的思考空间，避免一开始直接暴露解析；当用户卡住时又能逐步降低挫败感。系统还能记录用户用了第几层提示，从而判断掌握度和薄弱点。",
+            aiExplain: "分层提示的价值不只是体验更温和，还能产生学习数据。"
+          }
+        ]
+      }
+    ];
+
+    const phaseLabels = {
+      choose: "首页",
+      lesson: "AI 课堂",
+      homework: "课后作业",
+      review: "复盘"
+    };
+
+    const state = {
+      phase: "choose",
+      mode: "immersive",
+      courseIndex: 0,
+      lessonIndex: 0,
+      questionIndex: 0,
+      handOpen: false,
+      dialogueOverride: null,
+      logs: ["小绒老师已准备好今天的学习节点。"],
+      answers: createAnswerState(courses[0])
+    };
+
+    const app = document.getElementById("app");
+    const $ = (id) => document.getElementById(id);
+
+    function createAnswerState(course) {
+      return course.questions.map(() => ({
+        text: "",
+        score: null,
+        hits: [],
+        misses: [],
+        submitted: false,
+        extraLesson: ""
+      }));
+    }
+
+    function getCourse() {
+      return courses[state.courseIndex];
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function render() {
+      if (state.phase === "choose") renderHome();
+      if (state.phase !== "choose") renderStudy();
+    }
+
+    function renderHome() {
+      app.innerHTML = `
+        <div class="shell">
+          <header class="home-header">
+            <div class="brand">
+              <div class="brand-mark">AI</div>
+              <div class="brand-text">
+                <strong>小绒老师助教</strong>
+                <span>AI 智能刷题助手</span>
+              </div>
+            </div>
+            <div class="header-actions">
+              <span class="chip mint">今日 28 分钟</span>
+              <span class="chip sand">协作值 12</span>
+              <button class="btn secondary" id="mockProfileBtn">学习档案</button>
+            </div>
+          </header>
+
+          <section class="home-hero">
+            <div class="hero-copy">
+              <div>
+                <div class="eyebrow">AI 老师先讲课，再陪你刷题</div>
+                <h1 class="hero-title">把固定题库变成会提问、会讲评的学习课堂</h1>
+                <p class="hero-desc">小绒老师负责拆知识点，白子同桌在课间向你请教。你讲得越清楚，系统越知道下一步该补哪里。</p>
+              </div>
+              <div class="hero-actions">
+                <button class="btn" id="heroStartBtn">开始学习</button>
+                <button class="btn ghost" id="heroModeBtn">${state.mode === "immersive" ? "沉浸模式" : "快速模式"}</button>
+              </div>
+            </div>
+
+            <div class="hero-visual">
+              <div class="visual-top">
+                <span class="chip">课堂预备中</span>
+                <span class="chip mint">P0 Demo</span>
+              </div>
+              <div class="role-stage">
+                <div class="role-card teacher">
+                  <div class="mascot teacher"></div>
+                  <div class="role-label">
+                    <strong>小绒老师</strong>
+                    <span>拆知识点、提问、讲评</span>
+                  </div>
+                </div>
+                <div class="role-card baizi">
+                  <div class="mascot baizi">
+                    <span class="ear left"></span>
+                    <span class="ear right"></span>
+                    <span class="eye left"></span>
+                    <span class="eye right"></span>
+                    <span class="mouth"></span>
+                    <span class="scarf"></span>
+                  </div>
+                  <div class="role-label">
+                    <strong>白子同桌</strong>
+                    <span>请教你、一起复盘</span>
+                  </div>
+                </div>
+              </div>
+              <div class="dialog-mini">
+                <p>小绒老师：先选一个专题，我会把题目拆成几个容易理解的小节点。</p>
+                <p>白子同桌：课间我会向你请教一个问题，我们一起把知识点讲清楚。</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="stats-grid">
+            <div class="stat-card"><span>今日进度</span><strong>3 / 5</strong></div>
+            <div class="stat-card"><span>平均分</span><strong>${getAverageScore()}</strong></div>
+            <div class="stat-card"><span>薄弱点</span><strong>Proxy</strong></div>
+            <div class="stat-card"><span>协作值</span><strong>${state.mode === "immersive" ? "12" : "--"}</strong></div>
+          </section>
+
+          <section class="home-section">
+            <div class="section-head">
+              <div>
+                <h2>选择学习模式</h2>
+                <p>快速模式少互动，沉浸模式会启用白子同桌。</p>
+              </div>
+            </div>
+            <div class="mode-grid">
+              <button class="mode-card ${state.mode === "quick" ? "active" : ""}" data-mode="quick">
+                <div class="mode-icon">快</div>
+                <div class="mode-copy">
+                  <strong>快速模式</strong>
+                  <span>少互动，直接刷重点，适合复习。</span>
+                </div>
+              </button>
+              <button class="mode-card ${state.mode === "immersive" ? "active" : ""}" data-mode="immersive">
+                <div class="mode-icon">伴</div>
+                <div class="mode-copy">
+                  <strong>沉浸模式</strong>
+                  <span>小绒老师讲课，白子同桌一起复盘。</span>
+                </div>
+              </button>
+            </div>
+          </section>
+
+          <section class="home-section">
+            <div class="section-head">
+              <div>
+                <h2>推荐课程</h2>
+                <p>默认展示 3 个方向，点击开始后进入课堂会话。</p>
+              </div>
+              <span class="chip">课程列表</span>
+            </div>
+            <div class="course-grid">
+              ${courses.map((course, index) => courseCard(course, index)).join("")}
+            </div>
+          </section>
+
+          <section class="home-section persona-row">
+            <div class="persona-hint">
+              <div class="mini-avatar">师</div>
+              <div>
+                <strong>小绒老师</strong>
+                <p>我会先把专题拆成几个节点，中间穿插理解检测。</p>
+              </div>
+            </div>
+            <div class="persona-hint">
+              <div class="mini-avatar baizi">白</div>
+              <div>
+                <strong>白子同桌</strong>
+                <p>我会在沉浸模式里向你请教，讲给我听也能帮你复盘。</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      `;
+
+      document.querySelectorAll("[data-mode]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.mode = button.dataset.mode;
+          renderHome();
+        });
+      });
+
+      document.querySelectorAll("[data-start]").forEach((button) => {
+        button.addEventListener("click", () => startCourse(Number(button.dataset.start)));
+      });
+
+      $("heroStartBtn").addEventListener("click", () => startCourse(0));
+      $("heroModeBtn").addEventListener("click", () => {
+        state.mode = state.mode === "immersive" ? "quick" : "immersive";
+        renderHome();
+      });
+    }
+
+    function courseCard(course, index) {
+      const tags = course.tags.slice(0, 3).map((tag, tagIndex) => {
+        const cls = tagIndex === 1 ? "tag mint" : tagIndex === 2 ? "tag sand" : "tag";
+        return `<span class="${cls}">${tag}</span>`;
+      }).join("");
+
+      return `
+        <article class="course-card">
+          <div class="course-cover">
+            <span class="chip">${course.difficulty}</span>
+            <div class="cover-icon">${index + 1}</div>
+          </div>
+          <div>
+            <h3>${course.title}</h3>
+            <p>${course.goal}</p>
+            <div class="course-meta">
+              ${tags}
+              <span class="pill">${course.lesson.length} 节点</span>
+              <span class="pill">${course.questions.length} 题</span>
+            </div>
+          </div>
+          <button class="btn" data-start="${index}">开始学习</button>
+        </article>
+      `;
+    }
+
+    function renderStudy() {
+      app.innerHTML = `
+        <div class="shell">
+          <header class="study-header">
+            <div class="brand">
+              <button class="brand-mark" id="backHomeBtn">←</button>
+              <div class="brand-text">
+                <strong>${phaseLabels[state.phase]} · ${getCourse().title}</strong>
+                <span>${state.mode === "immersive" ? "沉浸模式：白子同桌已加入" : "快速模式：保留核心学习流程"}</span>
+              </div>
+            </div>
+            <div class="header-actions">
+              <span class="chip">${state.lessonIndex + 1} / ${getCourse().lesson.length}</span>
+              <span class="chip mint">均分 ${getAverageScore()}</span>
+              <button class="btn secondary" id="homeBtn">返回首页</button>
+            </div>
+          </header>
+
+          <section class="study-layout">
+            <main id="mainPanel"></main>
+            <aside class="side-panel">
+              <section class="panel">
+                <h2>本节知识点</h2>
+                <div class="knowledge-list" id="knowledgeList"></div>
+              </section>
+              <section class="panel">
+                <h2>课堂记录</h2>
+                <div class="teacher-log" id="teacherLog"></div>
+              </section>
+              <section class="panel">
+                <h2>作业复盘</h2>
+                <div class="review-list" id="reviewList"></div>
+              </section>
+            </aside>
+          </section>
+        </div>
+      `;
+
+      $("backHomeBtn").addEventListener("click", goHome);
+      $("homeBtn").addEventListener("click", goHome);
+      renderSide();
+      if (state.phase === "lesson") renderLesson();
+      if (state.phase === "homework") renderHomework();
+      if (state.phase === "review") renderReview();
+    }
+
+    function renderSide() {
+      const course = getCourse();
+      $("knowledgeList").innerHTML = course.lesson.map((item, index) => `
+        <div class="knowledge-item ${index === state.lessonIndex ? "active" : ""}">
+          <strong>${index + 1}. ${item.title}</strong><br>${item.point}
+        </div>
+      `).join("");
+
+      $("teacherLog").innerHTML = state.logs.slice(-5).map((log) => `
+        <div class="log-item"><strong>记录</strong><br>${escapeHtml(log)}</div>
+      `).join("");
+
+      $("reviewList").innerHTML = course.questions.map((question, index) => {
+        const item = state.answers[index];
+        const status = item.submitted ? `${item.score} 分` : "未提交";
+        return `<div class="review-item"><span>${index + 1}. ${question.tags[0]}</span><strong>${status}</strong></div>`;
+      }).join("");
+    }
+
+    function renderLesson() {
+      const course = getCourse();
+      const step = course.lesson[state.lessonIndex];
+      const finished = state.lessonIndex === course.lesson.length - 1;
+      const dialogue = state.dialogueOverride || {
+        speaker: `${course.teacher} · ${step.title}`,
+        status: finished ? "准备布置作业" : "点击继续",
+        text: step.text,
+        tip: `当前知识点：${step.point}`
+      };
+      const nextLabel = state.dialogueOverride ? "回到讲课" : finished ? "讲完了，布置作业" : "继续讲";
+
+      $("mainPanel").innerHTML = `
+        <section class="study-card lesson-stage">
+          <div class="lesson-head">
+            <div>
+              <h1 class="study-title">${course.title}</h1>
+              <p class="study-desc">${course.goal}</p>
+            </div>
+            <span class="chip mint">第 ${state.lessonIndex + 1} / ${course.lesson.length} 句</span>
+          </div>
+
+          <div class="dialogue-wrap">
+            <div class="speaker-card">
+              <div class="mascot teacher"></div>
+              <div class="speaker-name">
+                <strong>${course.teacher}</strong>
+                <span>AI 老师</span>
+              </div>
+            </div>
+            <div class="dialogue-box">
+              <div class="speaker-line">
+                <span>${escapeHtml(dialogue.speaker)}</span>
+                <span>${escapeHtml(dialogue.status)}</span>
+              </div>
+              <div class="dialogue-text">${escapeHtml(dialogue.text)}</div>
+              <div class="dialogue-tip">${escapeHtml(dialogue.tip)}</div>
+            </div>
+          </div>
+
+          <div class="hand-panel ${state.handOpen ? "visible" : ""}">
+            <strong>举手提问</strong>
+            <div class="quick-questions">
+              <button data-quick="这个知识点能再举个例子吗？">再举个例子</button>
+              <button data-quick="这个点面试时怎么回答更好？">面试怎么说</button>
+              <button data-quick="我容易把它和哪个概念混淆？">容易混淆点</button>
+            </div>
+            <div class="ask-row">
+              <input id="askInput" placeholder="输入你想问的问题">
+              <button class="btn warn" id="askBtn">提问</button>
+            </div>
+          </div>
+
+          ${state.mode === "immersive" ? renderBaiziNudge() : ""}
+
+          <div class="actions">
+            <button class="btn secondary" id="prevLessonBtn" ${state.lessonIndex === 0 ? "disabled" : ""}>上一句</button>
+            <button class="btn" id="nextLessonBtn">${nextLabel}</button>
+            <button class="btn ghost" id="raiseHandBtn">${state.handOpen ? "收起提问" : "举手提问"}</button>
+            <button class="btn secondary" id="skipHomeworkBtn">直接做作业</button>
+          </div>
+        </section>
+      `;
+
+      $("prevLessonBtn").addEventListener("click", () => {
+        state.dialogueOverride = null;
+        state.lessonIndex = Math.max(0, state.lessonIndex - 1);
+        addLog(`回到知识点：${course.lesson[state.lessonIndex].title}`);
+        render();
+      });
+
+      $("nextLessonBtn").addEventListener("click", () => {
+        if (state.dialogueOverride) {
+          state.dialogueOverride = null;
+          render();
+          return;
+        }
+        if (finished) {
+          startHomework();
+          return;
+        }
+        state.lessonIndex += 1;
+        addLog(`讲到知识点：${course.lesson[state.lessonIndex].title}`);
+        render();
+      });
+
+      $("raiseHandBtn").addEventListener("click", () => {
+        state.handOpen = !state.handOpen;
+        renderLesson();
+      });
+
+      $("skipHomeworkBtn").addEventListener("click", startHomework);
+      bindAskEvents();
+    }
+
+    function renderBaiziNudge() {
+      return `
+        <div class="persona-hint">
+          <div class="mini-avatar baizi">白</div>
+          <div>
+            <strong>白子同桌</strong>
+            <p>我刚才有点没听懂，等下能用你的话给我讲一遍吗？</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderHomework() {
+      const course = getCourse();
+      const question = course.questions[state.questionIndex];
+      const answer = state.answers[state.questionIndex];
+      const resultVisible = answer.submitted ? "visible" : "";
+
+      $("mainPanel").innerHTML = `
+        <section class="study-card">
+          <div>
+            <div class="question-meta">
+              ${question.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}
+              <span class="tag sand">${question.difficulty}</span>
+              <span class="tag mint">第 ${state.questionIndex + 1} / ${course.questions.length} 题</span>
+            </div>
+            <h1 class="question-title">${question.title}</h1>
+            <div class="question-body">${question.body}</div>
+            <div class="coach-line">小绒老师提示：${escapeHtml(answer.extraLesson || question.coach)}</div>
+            <textarea id="answerInput" placeholder="先用自己的话回答。提交后，AI 会立刻讲评这一题。">${escapeHtml(answer.text)}</textarea>
+
+            <div class="question-actions" style="margin-top: 14px;">
+              <button class="btn" id="submitBtn">${answer.submitted ? "重新提交" : "提交本题"}</button>
+              <button class="btn ghost" id="miniLessonBtn">再讲一下相关知识点</button>
+              <button class="btn secondary" id="backLessonBtn">回到课堂</button>
+            </div>
+
+            <section class="result ${resultVisible}">
+              <div class="score-row">
+                <div>
+                  <strong>AI 逐题讲评</strong>
+                  <div>${answer.submitted ? buildResultDesc(answer.score) : ""}</div>
+                </div>
+                <div class="score">${answer.submitted ? answer.score : 0}</div>
+              </div>
+              <div class="keyword-grid">
+                ${question.keywords.map((keyword) => `<span class="keyword ${answer.hits.includes(keyword) ? "hit" : ""}">${keyword}</span>`).join("")}
+              </div>
+              <div class="analysis">${answer.submitted ? escapeHtml(buildAiExplanation(question, answer)) : ""}</div>
+            </section>
+          </div>
+
+          <div class="homework-actions">
+            <button class="btn secondary" id="prevQuestionBtn" ${state.questionIndex === 0 ? "disabled" : ""}>上一题</button>
+            <button class="btn" id="nextQuestionBtn">${state.questionIndex === course.questions.length - 1 ? "完成复盘" : "下一题"}</button>
+          </div>
+        </section>
+      `;
+
+      $("submitBtn").addEventListener("click", submitAnswer);
+      $("miniLessonBtn").addEventListener("click", explainCurrentQuestion);
+      $("backLessonBtn").addEventListener("click", () => {
+        saveAnswerText();
+        state.phase = "lesson";
+        render();
+      });
+      $("prevQuestionBtn").addEventListener("click", () => {
+        saveAnswerText();
+        state.questionIndex = Math.max(0, state.questionIndex - 1);
+        render();
+      });
+      $("nextQuestionBtn").addEventListener("click", () => {
+        saveAnswerText();
+        if (state.questionIndex === course.questions.length - 1) {
+          state.phase = "review";
+        } else {
+          state.questionIndex += 1;
+        }
+        render();
+      });
+    }
+
+    function renderReview() {
+      const course = getCourse();
+      const done = state.answers.filter((item) => item.submitted).length;
+      const average = getAverageScore();
+      const misses = collectMisses();
+      const weakText = misses.length ? misses.slice(0, 5).join("、") : "暂时没有明显薄弱关键词";
+
+      $("mainPanel").innerHTML = `
+        <section class="study-card">
+          <div>
+            <h1 class="study-title">本轮学习复盘</h1>
+            <p class="study-desc">${course.title} 已完成 ${done}/${course.questions.length} 道作业，当前均分 ${average}。小绒老师会把低分关键词沉淀为下一轮推荐依据。</p>
+          </div>
+          <div class="review-grid">
+            <section class="course-card">
+              <div class="course-cover"><span class="chip mint">掌握度</span><div class="cover-icon">${average}</div></div>
+              <div>
+                <h3>${average >= 80 ? "可以进入下一节" : average >= 55 ? "建议补一轮表达" : "建议重新听课"}</h3>
+                <p>薄弱关键词：${weakText}</p>
+              </div>
+              <button class="btn" id="redoHomeworkBtn">重做作业</button>
+            </section>
+            <section class="course-card">
+              <div class="course-cover"><span class="chip">AI 推荐</span><div class="cover-icon">下</div></div>
+              <div>
+                <h3>${recommendNextCourse().title}</h3>
+                <p>${recommendNextCourse().goal}</p>
+              </div>
+              <button class="btn ghost" id="nextCourseBtn">学习推荐方向</button>
+            </section>
+            <section class="course-card">
+              <div class="course-cover"><span class="chip sand">白子</span><div class="cover-icon">白</div></div>
+              <div>
+                <h3>一起复盘</h3>
+                <p>${state.mode === "immersive" ? "白子会把你讲不清楚的点标出来，下次课间继续请教你。" : "快速模式已完成核心讲评，可以回首页选择沉浸模式。"}</p>
+              </div>
+              <button class="btn secondary" id="chooseAgainBtn">重新选方向</button>
+            </section>
+          </div>
+        </section>
+      `;
+
+      $("redoHomeworkBtn").addEventListener("click", () => {
+        state.questionIndex = 0;
+        state.phase = "homework";
+        render();
+      });
+      $("nextCourseBtn").addEventListener("click", () => switchCourse(recommendNextCourseIndex(), true));
+      $("chooseAgainBtn").addEventListener("click", goHome);
+    }
+
+    function bindAskEvents() {
+      document.querySelectorAll("[data-quick]").forEach((button) => {
+        button.addEventListener("click", () => answerStudentQuestion(button.dataset.quick));
+      });
+
+      const askBtn = $("askBtn");
+      const askInput = $("askInput");
+      if (!askBtn || !askInput) return;
+
+      askBtn.addEventListener("click", () => {
+        const text = askInput.value.trim();
+        if (!text) {
+          askInput.focus();
+          return;
+        }
+        answerStudentQuestion(text);
+      });
+
+      askInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          askBtn.click();
+        }
+      });
+    }
+
+    function answerStudentQuestion(text) {
+      const course = getCourse();
+      const step = course.lesson[state.lessonIndex];
+      addLog(`学生提问：${text}`);
+      addLog(`${course.teacher}补讲：围绕“${step.title}”，先抓住“${step.point}”。`);
+      state.handOpen = false;
+      state.dialogueOverride = {
+        speaker: `${course.teacher} · 回答举手问题`,
+        status: "补充讲解",
+        text: `你问：${text}\n\n好问题。围绕“${step.title}”，先抓住这句话：${step.point}\n\n如果面试时回答，可以先说结论，再举一个项目里的场景，最后补一句容易踩坑的边界。`,
+        tip: `补讲结束后，点击“回到讲课”继续第 ${state.lessonIndex + 1} 个知识点。`
+      };
+      render();
+    }
+
+    function startCourse(index) {
+      state.courseIndex = index;
+      resetCourseState();
+      state.phase = "lesson";
+      addLog(`开始学习：${getCourse().title}`);
+      render();
+    }
+
+    function switchCourse(index, autoStart = false) {
+      state.courseIndex = index;
+      resetCourseState();
+      state.phase = autoStart ? "lesson" : "choose";
+      addLog(`切换方向：${getCourse().title}`);
+      render();
+    }
+
+    function resetCourseState() {
+      state.lessonIndex = 0;
+      state.questionIndex = 0;
+      state.handOpen = false;
+      state.dialogueOverride = null;
+      state.answers = createAnswerState(getCourse());
+      state.logs = [`小绒老师已准备：${getCourse().title}`];
+    }
+
+    function startHomework() {
+      state.phase = "homework";
+      state.questionIndex = 0;
+      state.handOpen = false;
+      state.dialogueOverride = null;
+      addLog(`布置作业：${getCourse().questions.length} 道题，提交一题讲评一题。`);
+      render();
+    }
+
+    function goHome() {
+      state.phase = "choose";
+      render();
+    }
+
+    function saveAnswerText() {
+      const input = $("answerInput");
+      if (input) state.answers[state.questionIndex].text = input.value;
+    }
+
+    function submitAnswer() {
+      saveAnswerText();
+      const course = getCourse();
+      const question = course.questions[state.questionIndex];
+      const answer = state.answers[state.questionIndex];
+
+      if (!answer.text.trim()) {
+        $("answerInput").focus();
+        return;
+      }
+
+      const result = scoreAnswer(answer.text, question.keywords);
+      answer.score = result.score;
+      answer.hits = result.hits;
+      answer.misses = result.misses;
+      answer.submitted = true;
+      addLog(`讲评第 ${state.questionIndex + 1} 题：${answer.score} 分，遗漏 ${answer.misses.length} 个关键词。`);
+      render();
+    }
+
+    function explainCurrentQuestion() {
+      const course = getCourse();
+      const question = course.questions[state.questionIndex];
+      state.answers[state.questionIndex].extraLesson = `这题围绕“${question.tags.join("、")}”。作答时先给结论，再覆盖 ${question.keywords.slice(0, 3).join("、")}，最后补一个边界或例子。`;
+      addLog(`补讲：这题围绕“${question.tags.join("、")}”，作答时要覆盖 ${question.keywords.slice(0, 3).join("、")}。`);
+      render();
+    }
+
+    function scoreAnswer(text, keywords) {
+      const normalized = text.trim().toLowerCase();
+      const hits = keywords.filter((keyword) => normalized.includes(keyword.toLowerCase()));
+      const misses = keywords.filter((keyword) => !hits.includes(keyword));
+      const base = Math.round((hits.length / keywords.length) * 82);
+      const lengthBonus = normalized.length > 80 ? 10 : normalized.length > 35 ? 6 : 0;
+      const structureBonus = /[，。；,.]/.test(text) && normalized.length > 45 ? 8 : 0;
+      return {
+        hits,
+        misses,
+        score: Math.min(100, base + lengthBonus + structureBonus)
+      };
+    }
+
+    function buildResultDesc(score) {
+      if (score >= 85) return "表达比较完整，可以进入下一题。";
+      if (score >= 60) return "方向对了，补齐遗漏关键词会更稳。";
+      return "先别急着过题，建议回看知识点后再重答。";
+    }
+
+    function buildAiExplanation(question, answer) {
+      const hitText = answer.hits.length ? answer.hits.join("、") : "暂未命中明显关键词";
+      const missText = answer.misses.length ? answer.misses.join("、") : "没有明显遗漏";
+      return `你这题命中了：${hitText}。
+遗漏或表达不够明确的是：${missText}。
+
+小绒老师讲解：${question.aiExplain}
+
+参考答案：${question.answer}`;
+    }
+
+    function collectMisses() {
+      const misses = state.answers.flatMap((item) => item.misses || []);
+      return [...new Set(misses)];
+    }
+
+    function recommendNextCourseIndex() {
+      return (state.courseIndex + 1) % courses.length;
+    }
+
+    function recommendNextCourse() {
+      return courses[recommendNextCourseIndex()];
+    }
+
+    function getAverageScore() {
+      const done = state.answers.filter((item) => item.submitted).length;
+      return done ? Math.round(state.answers.reduce((sum, item) => sum + (item.score || 0), 0) / done) : 0;
+    }
+
+    function addLog(text) {
+      state.logs.push(text);
+    }
+
+    render();
+  </script>
+</body>
+</html>

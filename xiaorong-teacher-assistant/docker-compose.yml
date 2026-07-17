@@ -1,0 +1,103 @@
+services:
+  frontend:
+    build:
+      context: ../frontend/Forhaed
+    container_name: xiaorong-frontend
+    depends_on:
+      - app
+    ports:
+      - "8088:80"
+    restart: unless-stopped
+
+  mysql:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/library/mysql:8.0
+    container_name: xiaorong-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-123456}
+      MYSQL_DATABASE: xiaorong_teacher
+      TZ: Asia/Shanghai
+    ports:
+      - "13306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD:-123456}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/library/redis:7-alpine
+    container_name: xiaorong-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/library/rabbitmq:3.13.7-management
+    container_name: xiaorong-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-guest}
+      TZ: Asia/Shanghai
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: xiaorong-teacher-assistant
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-guest}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-guest}
+      XIAORONG_PERSISTENCE_JDBC_URL: jdbc:mysql://mysql:3306/xiaorong_teacher?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+      XIAORONG_PERSISTENCE_USERNAME: root
+      XIAORONG_PERSISTENCE_PASSWORD: ${MYSQL_ROOT_PASSWORD:-123456}
+      XIAORONG_AI_SECRET_MASTER_KEY: ${XIAORONG_AI_SECRET_MASTER_KEY:-}
+      XIAORONG_AI_SECRET_MASTER_KEY_FILE: /app/data/ai-secret-master.key
+      BAILIAN_API_KEY: ${BAILIAN_API_KEY:-}
+      DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:-}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      ONEAPI_API_KEY: ${ONEAPI_API_KEY:-}
+      XIAORONG_PERSISTENCE_ENABLED: "true"
+      XIAORONG_CACHE_ENABLED: "true"
+      XIAORONG_STUDY_TEMPLATE_PATH: /templates/后端题目固定互动模版（小绒老师+白子同桌）.md
+    volumes:
+      - ../interactive-quiz-demo:/templates:ro
+      - ai-secret-data:/app/data
+    ports:
+      - "18088:8088"
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
+  redis-data:
+  rabbitmq-data:
+  ai-secret-data:

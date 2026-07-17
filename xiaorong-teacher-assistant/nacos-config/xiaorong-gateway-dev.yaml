@@ -1,0 +1,42 @@
+server:
+  port: 8090
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+            maxAge: 36000
+      routes:
+        - id: xiaorong-auth
+          uri: lb://xiaorong-service-study
+          predicates:
+            - Path=/api/auth/**
+        - id: xiaorong-study
+          uri: lb://xiaorong-service-study
+          predicates:
+            - Path=/api/study/**
+        - id: xiaorong-admin
+          uri: lb://xiaorong-service-study
+          predicates:
+            - Path=/api/admin/**
+        - id: xiaorong-internal
+          uri: lb://xiaorong-service-study
+          predicates:
+            - Path=/internal/**
+
+xiaorong:
+  gateway:
+    auth:
+      enabled: true
+      redis-prefix: "xiaorong:"
+      ignore-whites:
+        - /api/auth/login
+        - /api/auth/register

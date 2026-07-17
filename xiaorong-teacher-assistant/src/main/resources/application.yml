@@ -1,0 +1,93 @@
+server:
+  port: 8088
+
+spring:
+  config:
+    import: optional:file:./src/main/resources/application-secret.yml
+  application:
+    name: xiaorong-teacher-assistant
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      database: 0
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+
+xiaorong:
+  mock-user-id: 10001
+  prompt-version: lesson-v1
+  study:
+    template-path: ../interactive-quiz-demo/后端题目固定互动模版（小绒老师+白子同桌）.md
+  persistence:
+    enabled: false
+    seed-on-startup: false
+    jdbc-url: jdbc:mysql://localhost:3306/xiaorong_teacher?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  cache:
+    enabled: false
+    prefix: "xiaorong:"
+    ttl-seconds: 3600
+  auth:
+    enabled: true
+    token-ttl-seconds: 86400
+    bcrypt-strength: 12
+  rabbitmq:
+    lesson-material-exchange: xiaorong.ai.direct
+    lesson-material-queue: xiaorong.ai.lesson-material.generate
+    lesson-material-routing-key: GENERATE_LESSON_MATERIAL
+  ai:
+    real-enabled: false
+    default-provider-code: bailian
+    secret-master-key: ${XIAORONG_AI_SECRET_MASTER_KEY:}
+    secret-master-key-file: ${XIAORONG_AI_SECRET_MASTER_KEY_FILE:${user.home}/.xiaorong/ai-secret-master.key}
+    providers:
+      - provider-code: deepseek
+        provider-name: DeepSeek
+        protocol: openai-compatible
+        base-url: https://api.deepseek.com/v1
+        api-key: ${DEEPSEEK_API_KEY:}
+        default-model: deepseek-chat
+        support-stream: true
+        support-json: true
+        priority: 20
+        enabled: true
+      - provider-code: bailian
+        provider-name: 阿里百炼
+        protocol: dashscope
+        base-url: https://dashscope.aliyuncs.com
+        api-key: ${BAILIAN_API_KEY:${DASHSCOPE_API_KEY:}}
+        default-model: qwen-plus
+        support-stream: true
+        support-json: true
+        priority: 10
+        enabled: true
+      - provider-code: oneapi
+        provider-name: OneAPI
+        protocol: openai-compatible
+        base-url: http://localhost:3000/v1
+        api-key: ${ONEAPI_API_KEY:}
+        default-model: gpt-4o-mini
+        support-stream: true
+        support-json: true
+        priority: 30
+        enabled: true
+
+logging:
+  level:
+    root: info

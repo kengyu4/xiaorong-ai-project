@@ -1,0 +1,86 @@
+# --- 依赖目录 ---
+node_modules/
+frontend/Forhaed/node_modules/
+hao-topic-master/**/node_modules/
+
+# --- 构建输出 ---
+target/
+build/
+out/
+bin/
+gen/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# --- IDE / 编辑器 ---
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.shelf/
+workspace.xml
+httpRequests/
+dataSources/
+dataSources.local.xml
+
+# --- Gradle ---
+.gradle/
+
+# --- Python 编译缓存 ---
+__pycache__/
+*.pyc
+
+# --- 日志 / 临时文件 ---
+*.log
+logs/
+derby.log
+
+# --- 系统文件 ---
+.DS_Store
+Thumbs.db
+
+# --- 密钥配置（含 API Key）---
+application-secret.yml
+application-local.yml
+**/application-secret.yml
+**/application-local.yml
+
+# --- OpenCode 工具 ---
+.codegraph/
+.playwright-mcp/
+.omo/
+.agents/
+
+# --- 数据库快照 ---
+dump.rdb
+
+# --- Maven Wrapper ---
+.mvn/
+
+# --- 本地配置变体 ---
+application-dev.yml
+application-test.yml
+application*.yml
+!application.yml
+
+# --- 环境变量 ---
+.env
+.env.*
+
+# --- 构建产物归档 ---
+*.zip
+*.tar.gz
+
+# --- 编辑器临时文件 ---
+*.swp
+*.swo
+*~
+
+# --- 不需要跟踪的项目目录 ---
+hao-topic-master/
+stitch-export/
+work/
